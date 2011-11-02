@@ -1,0 +1,58 @@
+### Base ###
+
+myhostname          = <%= fqdn %>
+myorigin            = /etc/mailname
+mailbox_size_limit  = 0
+message_size_limit  = <%= postfix_message_size_limit %>
+recipient_delimiter = +
+inet_interfaces     = all
+smtpd_banner        = $myhostname ESMTP $mail_name
+biff                = no
+append_dot_mydomain = no
+readme_directory    = no
+
+### Aliases and mailboxes ###
+
+alias_maps           = hash:/etc/aliases
+alias_database       = hash:/etc/aliases
+virtual_alias_maps   = hash:/etc/postfix/virtual, <% if postfix_ldap_support then %>ldap:/etc/postfix/ldap/aliases.cf
+virtual_mailbox_base = /var/mail/
+virtual_mailbox_maps = ldap:/etc/postfix/ldap/accounts.cf
+virtual_transport    = lmtp:unix:/var/run/cyrus/socket/lmtp
+<% end %>
+virtual_mailbox_domains = <% managed_mail_domains.each do |mail_domain| -%><%= mail_domain -%> <% end %>
+
+### Restriction ###
+
+mydestination                = localhost, localhost.<%= domain %>, <%= scope.lookupvar('::fqdn') %><% postfix_mydestination_complement.each do |destination| -%>, <%= destination %><% end %>
+relayhost                    = <% if postfix_relayhost then %><%= postfix_relayhost %><% end %>
+mynetworks                   = 127.0.0.0/8, [::ffff:127.0.0.0]/104, [::1]/128, /etc/postfix/exported_mynetworks
+smtpd_recipient_restrictions = permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination
+smtpd_sender_restrictions    = reject_unknown_sender_domain, permit_sasl_authenticated, permit_mynetworks
+
+### Authentication ###
+
+smtpd_sasl_auth_enable      = yes
+smtpd_sasl_security_options = noanonymous
+smtpd_sasl_type             = <%= postfix_sasl_type %>
+<% if postfix_sasl_type == 'dovecot' then %>smtpd_sasl_path        = private/auth<% end %>
+
+<% if postfix_smtpd_tls == true then %>
+### TLS ###
+
+#When TLS encryption is optional in the Postfix SMTP server, do not announce or accept SASL authentication over unencrypted connections. 
+smtpd_tls_auth_only                 = yes
+smtpd_tls_CAfile                    = <%= scope.lookupvar("ssl::variables::ssl_certs") %>/cert_<%= tls_ca %>.pem
+smtpd_tls_cert_file                 = <%= scope.lookupvar("ssl::variables::ssl_certs") %>/cert_<%= tls_cert %>.pem
+smtpd_tls_key_file                  = <%= scope.lookupvar("ssl::variables::ssl_private") %>/key_<%= tls_key %>.key
+smtpd_tls_session_cache_database    = btree:${data_directory}/smtpd_scache
+smtpd_tls_security_level            = may
+smtpd_tls_loglevel                  = 1
+smtp_tls_session_cache_database     = btree:${data_directory}/smtp_scache
+smtp_tls_loglevel                   = 1
+<% end %>
+
+<% if amavis == true -%>
+### SPAM & AV ###
+content_filter=smtp-amavis:[127.0.0.1]:10024
+<% end -%>

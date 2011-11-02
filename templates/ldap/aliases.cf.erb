@@ -1,0 +1,9 @@
+server_host = <% authentication_ldap_servers.each do |ldap_server| -%><%= ldap_server -%>, <% end %>
+server_port = 389
+search_base = dc=root
+query_filter = <%= aliases_query_filter %>
+result_attribute = <%= result_attribute %>
+bind = yes
+bind_dn = <%= ldap_bind_dn %>
+bind_pw = <%= ldap_bind_pw %>
+version = 3

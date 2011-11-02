@@ -1,0 +1,58 @@
+= Requirements
+
+= Overview
+
+This module configure postfix. Complement modules are amavis and dkim
+
+==Parameters
+- $dkim (default: false)
+- $amavis (default: false)
+- $mail_server (default: true): deprecated
+- $postfix_exported_mynetworks (default: false): specify file where should contains list of computers allowed to send to this server (tip: use exported resources)
+- $postfix_mydestination_complement (default: []): domain we receive mail from
+- $postfix_haproxy_relays (default: []): obsolete in postfix. But used in haproxy module
+
+
+= Usage
+
+Install a sender SMTP server
+
+  node "mynode" inherits ... {
+    $dkim            = true
+    $dkim_privatekey = "privatekey.mycompany.dkim"
+    $dkim_domains    = ["mycompany.com","mycompany.biz"]
+    $my_domain       = $::fqdn
+    include postfix
+    include dkim
+  }
+
+Install a MX smtp server
+
+  node "mynode" inherits ... {
+    $root_mail_alias                  = "bossmycompany.com"
+    $postmaster_mail_alias            = "emailadmin"
+    $mailerdaemon_mail_alias          = "emailadmin"
+
+    $postfix_mydestination_complement = ["mycompany.com","mycompany.biz"]
+    $my_domain                        = $::fqdn
+    postfix::alias {"news":             destination => "emailbounce" }
+    postfix::alias {"noreply":          destination => "emailbounce" }
+    postfix::alias {"abuse":            destination => "emailadmin"}
+    include postfix
+  }
+
+Install a (local) postfix server, relaying on a distant computer (listening on port 2525)
+  
+  node "mynode" inherits ... {
+    my_domain          = $::fqdn
+    $postfix_relayhost = "distant:2525"
+    include postfix
+  }
+
+
+= License
+
+ Copyright (C) 2011 Savoir-faire Linux
+ Author Lionel Nicolas <lionel.nicolas@savoirfairelinux.com>
+ Licence: GPL v2
+
