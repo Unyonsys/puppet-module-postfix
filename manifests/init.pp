@@ -45,20 +45,22 @@ class postfix (
   }
 
   if $postfix_smtpd_tls {
-    if $tls_ca and $tls_chain {
-      fail('Please provide $tls_ca or $tls_chain, NOT both.')
+    if $tls_cert and $tls_chain {
+      fail('Please provide $tls_cert or $tls_chain, NOT both.')
     }
     include ssl::variables
-    Ssl::Cert[$tls_cert]      -> Class['postfix']
 
     if $tls_ca {
       Ssl::Cert[$tls_ca]      -> Class['postfix']
     }
-    elsif $tls_chain {
+    if $tls_chain {
       Ssl::Chain[$tls_chain]  -> Class['postfix']
     }
+    elsif $tls_cert {
+      Ssl::Cert[$tls_cert]    -> Class['postfix']
+    }
     else {
-      fail('You must provide $tls_ca or $tls_chain.')
+      fail('You must provide $tls_cert or $tls_chain.')
     }
   }
   

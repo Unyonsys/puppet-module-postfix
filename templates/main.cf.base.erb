@@ -42,8 +42,15 @@ smtpd_sasl_type             = <%= postfix_sasl_type %>
 
 #When TLS encryption is optional in the Postfix SMTP server, do not announce or accept SASL authentication over unencrypted connections. 
 smtpd_tls_auth_only                 = yes
+<% if tls_ca then %>
 smtpd_tls_CAfile                    = <%= scope.lookupvar("ssl::variables::ssl_certs") %>/cert_<%= tls_ca %>.pem
+<% end %>
+<% if tls_cert then %>
 smtpd_tls_cert_file                 = <%= scope.lookupvar("ssl::variables::ssl_certs") %>/cert_<%= tls_cert %>.pem
+<% end %>
+<% if tls_chain then %>
+smtpd_tls_cert_file                 = <%= scope.lookupvar("ssl::variables::ssl_chain") %>/chain_<%= tls_chain %>.pem
+<% end %>
 smtpd_tls_key_file                  = <%= scope.lookupvar("ssl::variables::ssl_private") %>/key_<%= tls_key %>.key
 smtpd_tls_session_cache_database    = btree:${data_directory}/smtpd_scache
 smtpd_tls_security_level            = may
