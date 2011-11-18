@@ -18,6 +18,7 @@ class postfix (
   $accounts_query_filter            = '(&(objectClass=gosaMailAccount)(mail=%s))',
   $aliases_query_filter             = '(&(objectClass=gosaMailAccount)(|(mail=%s)(gosaMailAlternateAddress=%s)))',
   $result_attribute                 = 'mail',
+  $use_greylisting                  = true,
   $amavis                           = false
   ) {
   package { 'postfix': ensure => present }
@@ -62,6 +63,10 @@ class postfix (
     else {
       fail('You must provide $tls_cert or $tls_chain.')
     }
+  }
+
+  if $use_greylisting {
+    package { 'postgrey': ensure => present }
   }
   
   if $amavis {
