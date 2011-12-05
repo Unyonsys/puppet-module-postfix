@@ -1,11 +1,10 @@
 define postfix::hash (
-  $ensure="present"
-  ) {
+  $ensure=present
+) {
   file { $name:
     ensure => $ensure,
     mode   => 600,
     require => Package['postfix'],
-    #content => "# file managed by puppet\n"
   }
 
   file { "${name}.db":

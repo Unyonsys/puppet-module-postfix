@@ -4,8 +4,10 @@
 # ==========================================================================
 
 smtp      inet  n       -       -       -       -       smtpd
+<% if postfix_smtpd_tls == true %>
 submission inet n       -       -       -       -       smtpd -o smtpd_enforce_tls=yes -o smtpd_sasl_auth_enable=yes
 smtps     inet  n       -       -       -       -       smtpd -o smtpd_tls_wrappermode=yes -o smtpd_sasl_auth_enable=yes -o smtpd_sasl_security_options=noanonymous -o smtpd_sasl_type=cyrus
+<% end %>
 
 pickup    fifo  n       -       -       60      1       pickup
 cleanup   unix  n       -       -       -       0       cleanup
