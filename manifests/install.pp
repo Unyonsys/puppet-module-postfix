@@ -39,5 +39,11 @@ class postfix::install (
       ensure => present
     }
   }
+
+  file { '/usr/local/bin/postfix-flush-byemail.pl':
+    ensure => file,
+    source => 'puppet:///modules/postfix/postfix-flush-byemail.pl',
+    mode   => 0755,
+  }
 }
 

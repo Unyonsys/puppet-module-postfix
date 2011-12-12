@@ -65,7 +65,7 @@ smtp_tls_session_cache_database     = btree:${data_directory}/smtp_scache
 smtp_tls_loglevel                   = 1
 <% end %>
 
-<% if amavis == true -%>
+<% if amavis %>
 ### SPAM & AV ###
 content_filter=smtp-amavis:[127.0.0.1]:10024
 <% end -%>
