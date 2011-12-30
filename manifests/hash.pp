@@ -3,13 +3,13 @@ define postfix::hash (
 ) {
   file { $name:
     ensure => $ensure,
-    mode   => 600,
+    mode   => '0600',
     require => Package['postfix'],
   }
 
   file { "${name}.db":
     ensure  => $ensure,
-    mode    => 600,
+    mode    => '0600',
     notify  => Exec["generate ${name}.db"],
     require => File[$name],
   }

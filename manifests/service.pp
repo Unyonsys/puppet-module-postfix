@@ -9,7 +9,7 @@ class postfix::service (
     hasrestart  => true,
   }
 
-  if $use_greylisting { 
+  if $use_greylisting {
     service { 'postgrey':
       ensure      => running,
       enable      => true,

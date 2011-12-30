@@ -23,11 +23,11 @@ class postfix::config (
     #the SSL part
     include ssl::variables
   }
-  
+
   concat { '/etc/postfix/main.cf':
     owner   => root,
     group   => root,
-    mode    => 0644,
+    mode    => '0644',
     warn    => true,
   }
 
@@ -39,7 +39,7 @@ class postfix::config (
 
   file { '/etc/postfix/master.cf':
     ensure    => file,
-    mode      => 0644,
+    mode      => '0644',
     content   => template('postfix/master.cf.erb'),
   }
 
@@ -54,15 +54,15 @@ class postfix::config (
       replace => false,
       notify  => Exec['newaliases']
   }
-  
+
   concat { '/etc/postfix/exported_mynetworks':
-    mode    => 0644,
+    mode    => '0644',
     force   => true,
     warn    => true,
   }
-  
+
   concat { '/etc/postfix/virtual':
-    mode   => 0644,
+    mode   => '0644',
     force  => true,
     warn   => true,
     notify => Exec['newvirtualaliases']
@@ -86,7 +86,7 @@ class postfix::config (
 
     file { '/etc/postfix/sasl/smtpd.conf':
       ensure   => file,
-      mode     => 0644,
+      mode     => '0644',
       content  => "pwcheck_method: saslauthd\nmech_list: plain\n",
     }
   }
@@ -95,21 +95,21 @@ class postfix::config (
     if ! $authentication_ldap_servers or ! $ldap_bind_dn or ! $ldap_bind_pw{
       fail('You must provide valid values for LDAP connection.')
     }
-  
+
     file { '/etc/postfix/ldap':
       ensure  => directory,
-      mode    => 0755,
+      mode    => '0755',
     }
-  
+
     file { '/etc/postfix/ldap/accounts.cf':
       ensure   => file,
-      mode     => 0644,
+      mode     => '0644',
       content  => template('postfix/ldap/accounts.cf.erb'),
     }
-  
+
     file { '/etc/postfix/ldap/aliases.cf':
       ensure   => file,
-      mode     => 0644,
+      mode     => '0644',
       content  => template('postfix/ldap/aliases.cf.erb'),
     }
   }

@@ -31,7 +31,7 @@ smtpd_recipient_restrictions = permit_mynetworks,<% if postfix_smtpd_tls then %>
                                permit_sasl_authenticated,<% end %>
                                reject_unauth_destination,<% if use_greylisting then %>
                                check_policy_service inet:127.0.0.1:10023<% end %>
-                                
+
 smtpd_sender_restrictions    = reject_unknown_sender_domain,
                                permit_mynetworks,<% if postfix_smtpd_tls then %>
                                permit_sasl_authenticated<% end %>
@@ -46,7 +46,7 @@ smtpd_sasl_type             = <%= postfix_sasl_type %>
 
 ### TLS ###
 
-#When TLS encryption is optional in the Postfix SMTP server, do not announce or accept SASL authentication over unencrypted connections. 
+#When TLS encryption is optional in the Postfix SMTP server, do not announce or accept SASL authentication over unencrypted connections.
 smtpd_tls_auth_only                 = yes
 <% if tls_ca then %>
 smtpd_tls_CAfile                    = <%= scope.lookupvar("ssl::variables::ssl_certs") %>/cert_<%= tls_ca %>.pem

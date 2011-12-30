@@ -32,7 +32,7 @@ class postfix (
     postfix_ldap_support => $postfix_ldap_support,
     use_greylisting      => $use_greylisting
   }
-  
+
   class { 'postfix::config':
     managed_mail_domains             => $managed_mail_domains,
     root_mail_alias                  => $root_mail_alias,

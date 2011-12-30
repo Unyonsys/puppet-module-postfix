@@ -25,10 +25,10 @@ class postfix::install (
   package { 'postfix':
     ensure  => present,
   }
-  
+
   if $use_greylisting {
     package { 'postgrey':
-      ensure => present 
+      ensure => present
     }
   }
 
@@ -43,7 +43,7 @@ class postfix::install (
   file { '/usr/local/bin/postfix-flush-byemail.pl':
     ensure => file,
     source => 'puppet:///modules/postfix/postfix-flush-byemail.pl',
-    mode   => 0755,
+    mode   => '0755',
   }
 }
 
