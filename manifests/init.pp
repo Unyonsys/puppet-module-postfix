@@ -20,7 +20,7 @@ class postfix (
   $result_attribute                 = 'mail',
   $use_greylisting                  = false,
   $amavis                           = false
-  ) {
+) {
 
   Class['postfix::install'] -> Class['postfix::config'] ~> Class['postfix::service']
   if $amavis {
@@ -41,6 +41,8 @@ class postfix (
     postfix_sasl_type                => $postfix::postfix_sasl_type,
     postfix_message_size_limit       => $postfix::postfix_message_size_limit,
     postfix_smtpd_tls                => $postfix::postfix_smtpd_tls,
+    tls_cert                         => $postfix::tls_cert,
+    tls_ca                           => $postfix::tls_ca,
     tls_chain                        => $postfix::tls_chain,
     tls_key                          => $postfix::tls_key,
     postfix_ldap_support             => $postfix::postfix_ldap_support,

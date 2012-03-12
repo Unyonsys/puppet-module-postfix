@@ -6,6 +6,8 @@ class postfix::config (
   $postfix_sasl_type,
   $postfix_message_size_limit,
   $postfix_smtpd_tls,
+  $tls_cert,
+  $tls_ca,
   $tls_chain,
   $tls_key,
   $postfix_ldap_support,
@@ -17,7 +19,7 @@ class postfix::config (
   $result_attribute,
   $use_greylisting,
   $amavis
-  ) {
+) {
   if $postfix_smtpd_tls {
     #This ensures variables are properly defined in main.cf for
     #the SSL part
